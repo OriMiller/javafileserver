@@ -13,24 +13,24 @@ import java.util.Arrays;
 
 class Handler extends Thread
 {	
-	private String homeFile = "/Users/omiller/FT";
-	private File file = new File(homeFile);
+	private String homeFile;
+	private File file;
 	private Socket socket; //Socket connected to client
 	private DataInputStream in;
 	private DataOutputStream out;
 	
-	Handler(Socket s) throws IOException
+	Handler(Socket s, String homeFile) throws IOException
 	{
 		System.out.println(this.toString());
 		socket = s;
 		in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 		out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+		this.homeFile = homeFile;
+		this.file = new File(homeFile);
 	}
 	
 	private void getList(File file) throws IOException
 	{
-		if(file.exists() && file.canRead())
-		{
 			ArrayList<String> strs = new ArrayList<String>();
 			for(int i=0;i<file.listFiles().length;i++)
 			{
@@ -48,7 +48,6 @@ class Handler extends Thread
 			out.writeInt(Serializer.serialize(outList).length);
 			out.write(Serializer.serialize(outList));
 			out.flush();
-		}
 	}
 	
 	private void download(int get){
